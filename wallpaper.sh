@@ -140,19 +140,23 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     [ ! -f $HOME/.bash_aliases ] && echo '#!/bin/bash' > $HOME/.bash_aliases
     [ -f $HOME/.bash_aliases ] && chmod +x $HOME/.bash_aliases
     alias wp > /dev/null 2>&1
-    [ -f $HOME/.bash_aliases ] && [ $? -ne 0 ] && echo 'alias wp="source $HOME/.wallpaper.sh.profile"' >> $HOME/.bash_aliases
+    [ $? -ne 0 ] && [ -f $HOME/.bash_aliases ] && echo 'alias wp="bash <(curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh)"' >> $HOME/.bash_aliases
     dialog --title "Installing wallpaper.sh" --gauge "Adjusting permissions for $HOME/.wallpaper.sh.profile..." 0 -1 90 &
     PID=$!
     sleep 1
     kill $PID
     chmod +x $HOME/.wallpaper.sh.profile
-    dialog --title "Verifying wallpaper.sh" --gauge "Attempting to fetch and set your first wallpaper..." 0 -1 100 &
+    dialog --title "Verifying wallpaper.sh" --gauge "Attempting to fetch and set your first wallpaper..." 0 -1 95 &
     PID=$!
     source $HOME/.profile
+    dialog --title "Verifying wallpaper.sh" --gauge "Verification successful!" 0 -1 100 &
+    PID=$!
+    sleep 1
     kill $PID
     clear
     dialog --title "Installation Complete" --ok-label "Let's Go!" --msgbox "wallpaper.sh has been successfully installed for this user ($USER). To run wallpaper.sh, use the command 'wp'." 0 -1
     clear
+    bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
 else
     clear
     wp_menu_choice=$(dialog --title "wallpaper.sh" --stdout --menu "What would you like to do?" 0 -1 4 1 "Change wallpaper" 2 "Get details about the current wallpaper" 3 "Update the wallpaper fetch interval" 4 "Exit")
@@ -161,9 +165,15 @@ else
         1)
             clear
             WFL=0 source $HOME/.wallpaper.sh.profile
-            wp
+            bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
             ;;
         2)
+            clear
+            dialog --title "Current Wallpaper Details" --msgbox "$(cat /var/log/wallpaper.json | jq -r '.|to_entries|.[]|[.key,.value]|@tsv' | column -t -s$'\t')" 0 -1
+            clear
+            bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
+            ;;
+        3)
             clear
             wallpaper_fetch_interval=$(dialog --title "Wallpaper Fetch Interval" --stdout --menu "wallpaper.sh can wait a set amount of time before it changes your wallpaper again since the last time it was changed. This ensures you don't exceed the free allowance of your Unsplash API key. How long should wallpaper.sh wait before changing the wallpaper again since the last time it was changed?" 0 0 4 1 "Don't wait - Change the wallpaper immediately (not recommended)" 2 "Wait for at least 5 minutes" 3 "Wait for at least 30 minutes" 4 "Wait for at least 1 hour")
             echo "CWUK=$WUK" > $HOME/.wallpaper.sh.config
@@ -188,13 +198,7 @@ else
             clear
             dialog --title "Wallpaper Fetch Interval Updated" --msgbox "The wallpaper fetch interval has been updated." 0 -1
             clear
-            wp
-            ;;
-        3)
-            clear
-            dialog --title "Current Wallpaper Details" --msgbox "$(cat /var/log/wallpaper.json | jq -r '.|to_entries|.[]|[.key,.value]|@tsv' | column -t -s$'\t')" 0 -1
-            clear
-            wp
+            bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
             ;;
         4)
             clear
