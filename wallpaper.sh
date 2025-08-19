@@ -31,11 +31,11 @@ if [ ${#missing_dependencies[@]} -ne 0 ]; then
 fi
 if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     clear
-    dialog --title "wallpaper.sh setup wizard" --yes-label "Yes, please!" --no-label "No, go away!" --yesno "Welcome to the wallpaper.sh setup wizard. Would you like to install wallpaper.sh for this user ($USER)?" 0 0
+    dialog --title "wallpaper.sh setup wizard" --yes-label "Yes, please!" --no-label "No, go away!" --yesno "Welcome to the wallpaper.sh setup wizard. Would you like to install wallpaper.sh for this user ($USER)?" 0 -1
     install_prompt=$?
     clear
     if [ $install_prompt -ne 0 ]; then
-        dialog --title "Installation Aborted" --ok-label "Quit" --msgbox "wallpaper.sh was not installed for user '$USER' because you cancelled the installation." 0 0
+        dialog --title "Installation Aborted" --ok-label "Quit" --msgbox "wallpaper.sh was not installed for user '$USER' because you cancelled the installation." 0 -1
         clear
         exit 1
     fi
@@ -44,11 +44,11 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     clear
     wallpaper_fetch_interval=$(dialog --title "Wallpaper Fetch Interval" --ok-label "Proceed" --stdout --menu "wallpaper.sh can wait a set amount of time before it changes your wallpaper again since the last time it was changed. This ensures you don't exceed the free allowance of your Unsplash API key. How long should wallpaper.sh wait before changing the wallpaper again since the last time it was changed?" 0 0 4 1 "Don't wait - Change the wallpaper immediately (not recommended)" 2 "Wait for at least 5 minutes" 3 "Wait for at least 30 minutes" 4 "Wait for at least 1 hour")
     clear
-    dialog --title "Installing wallpaper.sh" --yes-label "Proceed" --no-label "Abort Installation" --yesno "wallpaper.sh will be installed for this user ($USER). Continue?" 0 0
+    dialog --title "Installing wallpaper.sh" --yes-label "Proceed" --no-label "Abort Installation" --yesno "wallpaper.sh will be installed for this user ($USER). Continue?" 0 -1
     install_prompt=$?
     clear
     if [ $install_prompt -ne 0 ]; then
-        dialog --title "Installation Aborted" --ok-label "Quit" --msgbox "wallpaper.sh was not installed for user '$USER' because you cancelled the installation." 0 0
+        dialog --title "Installation Aborted" --ok-label "Quit" --msgbox "wallpaper.sh was not installed for user '$USER' because you cancelled the installation." 0 -1
         clear
         exit 1
     fi
@@ -164,7 +164,7 @@ else
     case $wp_menu_choice in
         1)
             clear
-            WFL=0 source $HOME/.wallpaper.sh.profile
+            WLF=0 source $HOME/.wallpaper.sh.profile
             bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
             ;;
         2)
