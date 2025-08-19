@@ -165,8 +165,10 @@ else
     case $wp_menu_choice in
         1)
             clear
-            dialog --title "Changing Wallpaper" --progressbox "Fetching a new wallpaper..." 0 -1
+            dialog --title "Changing Wallpaper" --gauge "Fetching a new wallpaper..." 0 -1 100 &
+            PID=$!
             WLF=0 source $HOME/.wallpaper.sh.profile
+            kill $PID
             clear
             bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
             ;;
