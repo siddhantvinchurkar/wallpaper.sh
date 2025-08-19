@@ -72,12 +72,14 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     echo 'if [ -f $HOME/.wallpaper.sh.config ]; then' >> $HOME/.wallpaper.sh.profile
     echo '  while IFS= read -r line; do' >> $HOME/.wallpaper.sh.profile
     echo '    if [ "$(echo "$line" | awk -F '\''='\'' '\''{print $1}'\'')" == "CWFI" ]; then' >> $HOME/.wallpaper.sh.profile
-    echo '      export CWFI="$(echo "$line" | awk -F '\''='\'' '\''{print $2}'\'')" ' >> $HOME/.wallpaper.sh.profile
+    echo '      export CWFI="$(echo "$line" | awk -F '\''='\'' '\''{print $2}'\'')"' >> $HOME/.wallpaper.sh.profile
+    echo '      echo "CWFI=$CWFI"' >> $HOME/.wallpaper.sh.profile
     echo '    else' >> $HOME/.wallpaper.sh.profile
     echo '      export CWFI=3600' >> $HOME/.wallpaper.sh.profile
     echo '    fi' >> $HOME/.wallpaper.sh.profile
     echo '    if [ "$(echo "$line" | awk -F '\''='\'' '\''{print $1}'\'')" == "CWUK" ]; then' >> $HOME/.wallpaper.sh.profile
     echo '      export CWUK="$(echo "$line" | awk -F '\''='\'' '\''{print $2}'\'')" ' >> $HOME/.wallpaper.sh.profile
+    echo '      echo "CWUK=$CWUK"' >> $HOME/.wallpaper.sh.profile
     echo '    else' >> $HOME/.wallpaper.sh.profile
     echo '      export CWUK="dbcb74ec750aa178e2494a7d71d7aeb770ab31ee09fb52bbadd441a3c5dac888"' >> $HOME/.wallpaper.sh.profile
     echo '    fi' >> $HOME/.wallpaper.sh.profile
@@ -100,7 +102,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     [ $? -ne 0 ] && [ -f $HOME/.profile ] && echo '[ -f $HOME/.wallpaper.sh.profile ] && source $HOME/.wallpaper.sh.profile' >> $HOME/.profile
     [ ! -f $HOME/.bash_aliases ] && echo '#!/bin/bash' > $HOME/.bash_aliases
     [ -f $HOME/.bash_aliases ] && chmod +x $HOME/.bash_aliases
-    alias wp
+    alias wp > /dev/null 2>&1
     [ -f $HOME/.bash_aliases ] && [ $? -ne 0 ] && echo 'alias wp="source $HOME/.wallpaper.sh.profile"' >> $HOME/.bash_aliases
     chmod +x $HOME/.wallpaper.sh.profile
     source $HOME/.profile
