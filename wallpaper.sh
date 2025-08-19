@@ -40,11 +40,11 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
         exit 1
     fi
     clear
-    unsplash_api_key=$(dialog --title "Unsplash API Key" --ok-label "Proceed >>>" --stdout --inputbox "wallpaper.sh uses the Unsplash API to fetch wallpapers. Please enter your Unsplash API key to proceed." 0 -1)
+    unsplash_api_key=$(dialog --title "Unsplash API Key" --ok-label "Proceed" --stdout --inputbox "wallpaper.sh uses the Unsplash API to fetch wallpapers. Please enter your Unsplash API key to proceed." 0 -1)
     clear
-    wallpaper_fetch_interval=$(dialog --title "Wallpaper Fetch Interval" --ok-label "Proceed >>>" --stdout --menu "wallpaper.sh can wait a set amount of time before it changes your wallpaper again since the last time it was changed. This ensures you don't exceed the free allowance of your Unsplash API key. How long should wallpaper.sh wait before changing the wallpaper again since the last time it was changed?" 0 0 4 1 "Don't wait - Change the wallpaper immediately (not recommended)" 2 "Wait for at least 5 minutes" 3 "Wait for at least 30 minutes" 4 "Wait for at least 1 hour")
+    wallpaper_fetch_interval=$(dialog --title "Wallpaper Fetch Interval" --ok-label "Proceed" --stdout --menu "wallpaper.sh can wait a set amount of time before it changes your wallpaper again since the last time it was changed. This ensures you don't exceed the free allowance of your Unsplash API key. How long should wallpaper.sh wait before changing the wallpaper again since the last time it was changed?" 0 0 4 1 "Don't wait - Change the wallpaper immediately (not recommended)" 2 "Wait for at least 5 minutes" 3 "Wait for at least 30 minutes" 4 "Wait for at least 1 hour")
     clear
-    dialog --title "Installing wallpaper.sh" --yes-label "Proceed >>>" --no-label "Abort Installation" --yesno "wallpaper.sh will be installed for this user ($USER). Continue?" 0 0
+    dialog --title "Installing wallpaper.sh" --yes-label "Proceed" --no-label "Abort Installation" --yesno "wallpaper.sh will be installed for this user ($USER). Continue?" 0 0
     install_prompt=$?
     clear
     if [ $install_prompt -ne 0 ]; then
@@ -52,8 +52,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
         clear
         exit 1
     fi
-    dialog --title "Configuring wallpaper.sh" --gauge "Writing configuration to $HOME/.wallpaper.sh.config..." 0 -1 10
-    sleep 1
+    dialog --title "Configuring wallpaper.sh" --timeout 1 --gauge "Writing configuration to $HOME/.wallpaper.sh.config..." 0 -1 10
     echo "CWUK=\"$unsplash_api_key\"" > $HOME/.wallpaper.sh.config
     case $wallpaper_fetch_interval in
         1)
@@ -72,21 +71,16 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
             echo "CWFI=3600" >> $HOME/.wallpaper.sh.config
             ;;
     esac
-    dialog --title "Configuring wallpaper.sh" --gauge "Writing a default set of keywords to $HOME/.wallpaper.sh.keywords..." 0 -1 20
-    sleep 1
+    dialog --title "Configuring wallpaper.sh" --timeout 1 --gauge "Writing a default set of keywords to $HOME/.wallpaper.sh.keywords..." 0 -1 20
     echo -en "nature\ncars\nsummer\nabstract\nwildlife\nurban\nsea\nperspective\nwinter\nautumn\nspring\nmonsoon\nrain\nlandscape\nunhinged\nblur\naerial\nearth\npastel\ntravel\nminimalist\ntextures\ngirls\ncityscape\nbangalore\nblack\nspace\nuniverse\nnight\nsunrise\nsunset\ntrees\ndark\nlonely\ncolorful" > $HOME/.wallpaper.sh.keywords
-    dialog --title "Configuring wallpaper.sh" --gauge "Creating log file /var/log/wallpaper.json..." 0 -1 30
-    sleep 1
+    dialog --title "Configuring wallpaper.sh" --timeout 1 --gauge "Creating log file /var/log/wallpaper.json..." 0 -1 30
     [ ! -f /var/log/wallpaper.json ] && sudo touch /var/log/wallpaper.json
-    dialog --title "Configuring wallpaper.sh" --gauge "Taking ownership of log file /var/log/wallpaper.json..." 0 -1 40
-    sleep 1
+    dialog --title "Configuring wallpaper.sh" --timeout 1 --gauge "Taking ownership of log file /var/log/wallpaper.json..." 0 -1 40
     [ ! -f /var/log/wallpaper.json ] && sudo chown -R $USER:$USER /var/log/wallpaper.json
-    dialog --title "Configuring wallpaper.sh" --gauge "Adjusting permissions for log file /var/log/wallpaper.json..." 0 -1 50
-    sleep 1
+    dialog --title "Configuring wallpaper.sh" --timeout 1 --gauge "Adjusting permissions for log file /var/log/wallpaper.json..." 0 -1 50
     [ ! -f /var/log/wallpaper.json ] && sudo chmod -R 777 /var/log/wallpaper.json
     [ ! -f /var/log/wallpaper.json ] && sudo chmod -R +x /var/log/wallpaper.json
-    dialog --title "Configuring wallpaper.sh" --gauge "Creating personalized profile script $HOME/.wallpaper.sh.profile..." 0 -1 60
-    sleep 1
+    dialog --title "Configuring wallpaper.sh" --timeout 1 --gauge "Creating personalized profile script $HOME/.wallpaper.sh.profile..." 0 -1 60
     echo '#!/bin/bash' > $HOME/.wallpaper.sh.profile
     echo 'if [ -f $HOME/.wallpaper.sh.config ]; then' >> $HOME/.wallpaper.sh.profile
     echo '  while IFS= read -r line; do' >> $HOME/.wallpaper.sh.profile
@@ -115,21 +109,17 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     echo '[ -f /tmp/wpj ] && rm /tmp/wpj' >> $HOME/.wallpaper.sh.profile
     echo '[ -f /tmp/wpf ] && mv /tmp/wpf $WLC' >> $HOME/.wallpaper.sh.profile
     echo '[ $(($(date +%s)-$WLF)) -gt $WFI ] && export WLF=$(date +%s)' >> $HOME/.wallpaper.sh.profile
-    dialog --title "Installing wallpaper.sh" --gauge "Appending profile script to $HOME/.profile..." 0 -1 70
-    sleep 1
+    dialog --title "Installing wallpaper.sh" --timeout 1 --gauge "Appending profile script to $HOME/.profile..." 0 -1 70
     grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile
     [ $? -ne 0 ] && [ -f $HOME/.profile ] && echo '[ -f $HOME/.wallpaper.sh.profile ] && source $HOME/.wallpaper.sh.profile' >> $HOME/.profile
-    dialog --title "Installing wallpaper.sh" --gauge "Creating alias 'wp' in $HOME/.bash_aliases..." 0 -1 80
-    sleep 1
+    dialog --title "Installing wallpaper.sh" --timeout 1 --gauge "Creating alias 'wp' in $HOME/.bash_aliases..." 0 -1 80
     [ ! -f $HOME/.bash_aliases ] && echo '#!/bin/bash' > $HOME/.bash_aliases
     [ -f $HOME/.bash_aliases ] && chmod +x $HOME/.bash_aliases
     alias wp > /dev/null 2>&1
     [ -f $HOME/.bash_aliases ] && [ $? -ne 0 ] && echo 'alias wp="source $HOME/.wallpaper.sh.profile"' >> $HOME/.bash_aliases
-    dialog --title "Installing wallpaper.sh" --gauge "Adjusting permissions for $HOME/.wallpaper.sh.profile..." 0 -1 90
-    sleep 1
+    dialog --title "Installing wallpaper.sh" --timeout 1 --gauge "Adjusting permissions for $HOME/.wallpaper.sh.profile..." 0 -1 90
     chmod +x $HOME/.wallpaper.sh.profile
-    dialog --title "Verifying wallpaper.sh" --gauge "Attempting to fetch and set your first wallpaper..." 0 -1 100
-    sleep 1
+    dialog --title "Verifying wallpaper.sh" --timeout 5 --gauge "Attempting to fetch and set your first wallpaper..." 0 -1 100
     source $HOME/.profile
     clear
     dialog --title "Installation Complete" --ok-label "Let's Go!" --msgbox "wallpaper.sh has been successfully installed for this user ($USER). To run wallpaper.sh, use the command 'wp'." 0 -1
