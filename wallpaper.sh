@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo -v
 if [ $(uname -v | grep -qoE 'Ubuntu') -ne 0 ]; then
     echo "wallpaper.sh is designed to work only with Ubuntu-based systems but you're running something else."
     exit 1
@@ -59,6 +60,10 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
             ;;
     esac
     echo -en "nature\ncars\nsummer\nabstract\nwildlife\nurban\nsea\nperspective\nwinter\nautumn\nspring\nmonsoon\nrain\nlandscape\nunhinged\nblur\naerial\nearth\npastel\ntravel\nminimalist\ntextures\ngirls\ncityscape\nbangalore\nblack\nspace\nuniverse\nnight\nsunrise\nsunset\ntrees\ndark\nlonely\ncolorful" > $HOME/.wallpaper.sh.keywords
+    [ ! -f /var/log/wallpaper.json ] && sudo touch /var/log/wallpaper.json
+    [ ! -f /var/log/wallpaper.json ] && sudo chown -R $USER:$USER /var/log/wallpaper.json
+    [ ! -f /var/log/wallpaper.json ] && sudo chmod -R 777 /var/log/wallpaper.json
+    [ ! -f /var/log/wallpaper.json ] && sudo chmod -R +x /var/log/wallpaper.json
     clear
     dialog --title "Installing wallpaper.sh" --msgbox "wallpaper.sh will be installed for this user ($USER)." 0 -1
     clear
@@ -140,7 +145,7 @@ else
             ;;
         3)
             clear
-            dialog --title "Current Wallpaper Details" --msgbox "$(cat /var/log/wallpaper.json)" 0 -1
+            dialog --title "Current Wallpaper Details" --msgbox "$(cat /var/log/wallpaper.json | jq -r '.|to_entries|.[]|[.key,.value]|@tsv' | column -t -s$'\t')" 0 -1
             clear
             wp
             ;;
