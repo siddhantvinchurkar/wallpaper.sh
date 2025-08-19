@@ -1,4 +1,32 @@
 #!/bin/bash
+if [ $(uname -v | grep -qoE 'Ubuntu') -ne 0 ]; then
+    echo "wallpaper.sh is designed to work only with Ubuntu-based systems but you're running something else."
+    exit 1
+fi
+if [ $(apt list --installed 2>&1 | grep -coE '^(ubuntu-desktop|ubuntu-desktop-minimal|gsettings-ubuntu-schemas|gsettings-desktop-schemas)') -ne 4 ]; then
+    echo "wallpaper.sh is designed to work only with Ubuntu Desktop environments."
+    echo "Try running 'sudo apt install -y ubuntu-desktop'. It might help."
+    exit 1
+fi
+required_dependencies=(curl jq dialog)
+required_dependencies=($(printf "%s\n" "${required_dependencies[@]}" | sort))
+installed_dependencies=($(apt list --installed 2>&1 | grep -oE '^('"$(IFS='|'; echo "${required_dependencies[*]}")"')'))
+installed_dependencies=($(printf "%s\n" "${installed_dependencies[@]}" | sort))
+missing_dependencies=($(comm -13 <(printf "%s\n" "${installed_dependencies[@]}") <(printf "%s\n" "${required_dependencies[@]}")))
+if [ ${#missing_dependencies[@]} -ne 0 ]; then
+    echo "The following required dependencies are missing: ${missing_dependencies[*]}"
+    echo "No worries, wallpaper.sh will attempt to install them for you..."
+    sudo apt update -y
+    sudo apt install -y "${missing_dependencies[@]}"
+    installed_dependencies=($(apt list --installed 2>&1 | grep -oE '^('"$(IFS='|'; echo "${required_dependencies[*]}")"')'))
+    installed_dependencies=($(printf "%s\n" "${installed_dependencies[@]}" | sort))
+    missing_dependencies=($(comm -13 <(printf "%s\n" "${installed_dependencies[@]}") <(printf "%s\n" "${required_dependencies[@]}")))
+    if [ ${#missing_dependencies[@]} -ne 0 ]; then
+        echo "The following required dependencies could not be installed: ${missing_dependencies[*]}"
+        echo "Please install them manually and try again."
+        exit 1
+    fi
+fi
 if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     clear
     dialog --title "wallpaper.sh setup wizard" --yesno "Welcome to the wallpaper.sh setup wizard. Would you like to install wallpaper.sh for this user ($USER)?" 0 -1
