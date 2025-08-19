@@ -141,6 +141,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     [ -f $HOME/.bash_aliases ] && chmod +x $HOME/.bash_aliases
     alias wp > /dev/null 2>&1
     [ $? -ne 0 ] && [ -f $HOME/.bash_aliases ] && echo 'alias wp="bash <(curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh)"' >> $HOME/.bash_aliases
+    source $HOME/.bash_aliases > /dev/null 2>&1
     dialog --title "Installing wallpaper.sh" --gauge "Adjusting permissions for $HOME/.wallpaper.sh.profile..." 0 -1 90 &
     PID=$!
     sleep 1
