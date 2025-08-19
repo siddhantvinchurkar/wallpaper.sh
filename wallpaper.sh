@@ -1,6 +1,7 @@
 #!/bin/bash
 sudo -v
-if [ $(uname -v | grep -qoE 'Ubuntu') -ne 0 ]; then
+uname -v | grep -qoE 'Ubuntu'
+if [ $? -ne 0 ]; then
     echo "wallpaper.sh is designed to work only with Ubuntu-based systems but you're running something else."
     exit 1
 fi
@@ -41,7 +42,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     unsplash_api_key=$(dialog --title "Unsplash API Key" --stdout --inputbox "wallpaper.sh uses the Unsplash API to fetch wallpapers. Please enter your Unsplash API key to proceed." 0 -1)
     clear
     wallpaper_fetch_interval=$(dialog --title "Wallpaper Fetch Interval" --stdout --menu "wallpaper.sh can wait a set amount of time before it changes your wallpaper again since the last time it was changed. This ensures you don't exceed the free allowance of your Unsplash API key. How long should wallpaper.sh wait before changing the wallpaper again since the last time it was changed?" 0 0 4 1 "Don't wait - Change the wallpaper immediately (not recommended)" 2 "Wait for at least 5 minutes" 3 "Wait for at least 30 minutes" 4 "Wait for at least 1 hour")
-    echo "CWUK=$unsplash_api_key" > $HOME/.wallpaper.sh.config
+    echo "CWUK=\"$unsplash_api_key\"" > $HOME/.wallpaper.sh.config
     case $wallpaper_fetch_interval in
         1)
             echo "CWFI=0" >> $HOME/.wallpaper.sh.config
@@ -85,7 +86,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     echo '[ -z "${WFI+x}" ] && export WFI=$CWFI' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WLF+x}" ] && export WLF=0' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WLC+x}" ] && export WLC=$(gsettings get org.gnome.desktop.background picture-uri | cut -d "'\''" -f 2 | cut -c 8-)' >> $HOME/.wallpaper.sh.profile
-    echo '[ -z "${WUK+x}" ] && export WUK=$CWUK' >> $HOME/.wallpaper.sh.profile
+    echo '[ -z "${WUK+x}" ] && export WUK="$CWUK"' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WSQ+x}" ] && export WSQ=$(shuf -n 1 $HOME/.wallpaper.sh.keywords)' >> $HOME/.wallpaper.sh.profile
     echo '[ -f /tmp/wpj ] && rm /tmp/wpj' >> $HOME/.wallpaper.sh.profile
     echo '[ $(($(date +%s)-$WLF)) -gt $WFI ] && curl -fsL "https://api.unsplash.com/search/photos?query=$WSQ&client_id=$WUK&per_page=1&orientation=landscape&page="$(shuf -i 1-200 -n 1)"&order_by=latest" -o /tmp/wpj' >> $HOME/.wallpaper.sh.profile
