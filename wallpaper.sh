@@ -166,7 +166,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
 else
     clear
-    wp_menu_choice=$(dialog --title "wallpaper.sh" --no-cancel --stdout --menu "What would you like to do?" 0 -1 5 1 "Change wallpaper" 2 "Get details about the current wallpaper" 3 "Update the wallpaper fetch interval" 4 "Uninstall wallpaper.sh" 5 "Exit")
+    wp_menu_choice=$(dialog --title "wallpaper.sh" --no-cancel --stdout --menu "What would you like to do?" 0 -1 7 1 "Change wallpaper" 2 "Get details about the current wallpaper" 3 "Update the wallpaper fetch interval" 4 "Crontab Settings" 5 "View the current configuration" 6 "Uninstall wallpaper.sh" 7 "Exit")
     clear
     case $wp_menu_choice in
         1)
@@ -212,6 +212,18 @@ else
             curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
             ;;
         4)
+            # TODO: Implement functionality for option 4 - crontab settings
+            clear
+            exit 0
+            ;;
+        5)
+            clear
+            config_table=$(while read -r line; do echo $line | awk -F '=' '{if($1 == "CWUK") print "Unsplash API Key,"$2","(length("Unsplash API Key")+length($2));if($1 == "CWFI") print "Wallpaper Fetch Interval,"$2","(length("Wallpaper Fetch Interval")+length($2));}';done < $HOME/.wallpaper.sh.config | awk -F ',' '{if($3 > prev)prev=$3;print $1","$2","prev;prev=$3}' | awk -F ',' '{printf "|";rem=($3%2);mid=($3-rem);mid=(mid/2);mid=(mid-rem);if(length($1)+length($2)==$3)len=$3+(mid/2)-rem;else len=$3+length($1)+length($2)-(mid/2)-rem;for(i=0;i<len;i++)if(i==mid)printf "|";else {if($1=="Unsplash API Key")printf "‾";else printf "-";};printf "|\\n";print"";printf "|"$1;for(i=0;i<(mid-length($1));i++)printf " ";printf "|"$2;if(length($1)+length($2)==$3)len2=0;else len2=length($1)+(mid/2)+rem;for(i=0;i<len2;i++)printf " ";printf "|\\n";print "";flen=($3+(mid/2)+rem-2);mid2=mid;} END {printf "|";for(i=0;i<flen;i++)if(i==mid2)printf "|";else printf "_";printf "|\\n";print "";}')
+            dialog --title "Current Configuration" --ok-label "Go Back" --msgbox "$config_table" -1 -1
+            clear
+            curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
+            ;;
+        6)
             clear
             dialog --title "Uninstall wallpaper.sh" --yes-label "Yeah, uninstall it" --no-label "No, keep it" --yesno "Are you sure you want to uninstall wallpaper.sh?" 0 -1
             if [ $? -eq 0 ]; then
@@ -231,7 +243,7 @@ else
             clear
             exit 0
             ;;
-        5)
+        7)
             clear
             exit 0
             ;;
