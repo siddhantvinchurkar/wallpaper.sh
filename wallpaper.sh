@@ -117,12 +117,10 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     echo '    fi' >> $HOME/.wallpaper.sh.profile
     echo '  done < $HOME/.wallpaper.sh.config' >> $HOME/.wallpaper.sh.profile
     echo 'fi' >> $HOME/.wallpaper.sh.profile
-    echo '[ ! -z "${WFI+x}" ] && export WFI=$CWFI' >> $HOME/.wallpaper.sh.profile
-    echo '[ -z "${WFI+x}" ] && export WFI=$WFI' >> $HOME/.wallpaper.sh.profile
+    echo '[ -z "${WFI+x}" ] && export WFI=$CWFI' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WLF+x}" ] && export WLF=0' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WLC+x}" ] && export WLC=$(gsettings get org.gnome.desktop.background picture-uri | cut -d "'\''" -f 2 | cut -c 8-)' >> $HOME/.wallpaper.sh.profile
-    echo '[ ! -z "${WUK+x}" ] && export WUK=$CWUK' >> $HOME/.wallpaper.sh.profile
-    echo '[ -z "${WUK+x}" ] && export WUK=$WUK' >> $HOME/.wallpaper.sh.profile
+    echo '[ -z "${WUK+x}" ] && export WUK=$CWUK' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WSQ+x}" ] && export WSQ=$(shuf -n 1 $HOME/.wallpaper.sh.keywords)' >> $HOME/.wallpaper.sh.profile
     echo '[ -f /tmp/wpj ] && rm /tmp/wpj' >> $HOME/.wallpaper.sh.profile
     echo '[ $(($(date +%s)-$WLF)) -gt $WFI ] && curl -fsL "https://api.unsplash.com/search/photos?query=$WSQ&client_id=$WUK&per_page=1&orientation=landscape&page="$(shuf -i 1-200 -n 1)"&order_by=latest" -o /tmp/wpj' >> $HOME/.wallpaper.sh.profile
@@ -155,7 +153,6 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     chmod +x $HOME/.wallpaper.sh.profile
     dialog --title "Verifying wallpaper.sh" --gauge "Attempting to fetch and set your first wallpaper..." 0 -1 95 &
     PID=$!
-    WLF=0 source $HOME/.profile
     WLF=0 source $HOME/.profile
     dialog --title "Verifying wallpaper.sh" --gauge "Verification successful!" 0 -1 100 &
     PID=$!
