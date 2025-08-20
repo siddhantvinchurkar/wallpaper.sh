@@ -117,9 +117,11 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     echo '    fi' >> $HOME/.wallpaper.sh.profile
     echo '  done < $HOME/.wallpaper.sh.config' >> $HOME/.wallpaper.sh.profile
     echo 'fi' >> $HOME/.wallpaper.sh.profile
+    echo '[ ! -z "${CWFI+x}" ] && export CWFI=$CWFI' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WFI+x}" ] && export WFI=$CWFI' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WLF+x}" ] && export WLF=0' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WLC+x}" ] && export WLC=$(gsettings get org.gnome.desktop.background picture-uri | cut -d "'\''" -f 2 | cut -c 8-)' >> $HOME/.wallpaper.sh.profile
+    echo '[ ! -z "${CWUK+x}" ] && export CWUK=$CWUK' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WUK+x}" ] && export WUK=$CWUK' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WSQ+x}" ] && export WSQ=$(shuf -n 1 $HOME/.wallpaper.sh.keywords)' >> $HOME/.wallpaper.sh.profile
     echo '[ -f /tmp/wpj ] && rm /tmp/wpj' >> $HOME/.wallpaper.sh.profile
