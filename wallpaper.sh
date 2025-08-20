@@ -105,7 +105,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     kill $PID
     echo '#!/bin/bash' > $HOME/.wallpaper.sh.profile
     echo 'if [ -f $HOME/.wallpaper.sh.config ]; then' >> $HOME/.wallpaper.sh.profile
-    echo '  while IFS= read -r line; do' >> $HOME/.wallpaper.sh.profile
+    echo '  cat $HOME/.wallpaper.sh.config | while IFS= read -r line; do' >> $HOME/.wallpaper.sh.profile
     echo '    if [ "$(echo "$line" | awk -F '\''='\'' '\''{print $1}'\'')" == "CWFI" ]; then' >> $HOME/.wallpaper.sh.profile
     echo '      export CWFI="$(echo "$line" | awk -F '\''='\'' '\''{print $2}'\'')"' >> $HOME/.wallpaper.sh.profile
     echo '    else' >> $HOME/.wallpaper.sh.profile
@@ -116,7 +116,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     echo '    else' >> $HOME/.wallpaper.sh.profile
     echo '      export CWUK="dbcb74ec750aa178e2494a7d71d7aeb770ab31ee09fb52bbadd441a3c5dac888"' >> $HOME/.wallpaper.sh.profile
     echo '    fi' >> $HOME/.wallpaper.sh.profile
-    echo '  done < $HOME/.wallpaper.sh.config' >> $HOME/.wallpaper.sh.profile
+    echo '  done' >> $HOME/.wallpaper.sh.profile
     echo 'fi' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WFI+x}" ] && export WFI="$CWFI"' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WLF+x}" ] && export WLF=0' >> $HOME/.wallpaper.sh.profile
