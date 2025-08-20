@@ -60,7 +60,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     PID=$!
     sleep 1
     kill $PID
-    echo "CWUK=\"$unsplash_api_key\"" > $HOME/.wallpaper.sh.config
+    echo "CWUK=$unsplash_api_key" > $HOME/.wallpaper.sh.config
     case $wallpaper_fetch_interval in
         1)
             echo "CWFI=0" >> $HOME/.wallpaper.sh.config
