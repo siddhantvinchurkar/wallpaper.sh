@@ -110,7 +110,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     echo '    if [ "$(echo "$line" | awk -F '\''='\'' '\''{print $1}'\'')" = "CWFI" ]; then' >> $HOME/.wallpaper.sh.profile
     echo '      export CWFI="$(echo "$line" | awk -F '\''='\'' '\''{print $2}'\'')"' >> $HOME/.wallpaper.sh.profile
     echo '    elif [ "$(echo "$line" | awk -F '\''='\'' '\''{print $1}'\'')" = "CWUK" ]; then' >> $HOME/.wallpaper.sh.profile
-    echo '      export CWUK="$(echo "$line" | awk -F '\''='\'' '\''{print $2}'\'')" ' >> $HOME/.wallpaper.sh.profile
+    echo '      export CWUK="$(echo "$line" | awk -F '\''='\'' '\''{print $2}'\'')"' >> $HOME/.wallpaper.sh.profile
     echo '    else' >> $HOME/.wallpaper.sh.profile
     echo '      export CWFI=3600' >> $HOME/.wallpaper.sh.profile
     echo '      export CWUK="dbcb74ec750aa178e2494a7d71d7aeb770ab31ee09fb52bbadd441a3c5dac888"' >> $HOME/.wallpaper.sh.profile
