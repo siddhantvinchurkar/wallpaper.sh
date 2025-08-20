@@ -92,13 +92,13 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     PID=$!
     sleep 1
     kill $PID
-    [ ! -f /var/log/wallpaper.json ] && sudo chown -R $USER:$USER /var/log/wallpaper.json
+    [ -f /var/log/wallpaper.json ] && sudo chown -R $USER:$USER /var/log/wallpaper.json
     dialog --title "Configuring wallpaper.sh" --gauge "Adjusting permissions for log file /var/log/wallpaper.json..." 0 -1 50 &
     PID=$!
     sleep 1
     kill $PID
-    [ ! -f /var/log/wallpaper.json ] && sudo chmod -R 777 /var/log/wallpaper.json
-    [ ! -f /var/log/wallpaper.json ] && sudo chmod -R +x /var/log/wallpaper.json
+    [ -f /var/log/wallpaper.json ] && sudo chmod -R 777 /var/log/wallpaper.json
+    [ -f /var/log/wallpaper.json ] && sudo chmod -R +x /var/log/wallpaper.json
     dialog --title "Configuring wallpaper.sh" --gauge "Creating personalized profile script $HOME/.wallpaper.sh.profile..." 0 -1 60 &
     PID=$!
     sleep 1
