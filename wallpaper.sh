@@ -155,7 +155,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     chmod +x $HOME/.wallpaper.sh.profile
     dialog --title "Verifying wallpaper.sh" --gauge "Attempting to fetch and set your first wallpaper..." 0 -1 95 &
     PID=$!
-    WLF=0 source $HOME/.profile
+    WLF=0 source $HOME/.wallpaper.sh.profile
     dialog --title "Verifying wallpaper.sh" --gauge "Verification successful!" 0 -1 100 &
     PID=$!
     sleep 1
