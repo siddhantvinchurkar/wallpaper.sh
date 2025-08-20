@@ -218,12 +218,13 @@ else
                 rm -f $HOME/.wallpaper.sh.profile
                 rm -f $HOME/.wallpaper.sh.config
                 rm -f $HOME/.wallpaper.sh.keywords
-                rm -f /var/log/wallpaper.json
+                sudo rm -f /var/log/wallpaper.json
                 grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile
                 [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
                 grep -q 'alias wp=' $HOME/.bash_aliases
                 [ $? -eq 0 ] && sed -i '/alias wp=/d' $HOME/.bash_aliases
                 unset CWFI CWUK WFI WUK WSQ WLF WLC
+                source $HOME/.profile
                 clear
                 dialog --title "Uninstall Complete" --ok-label "Okay, thanks!" --msgbox "wallpaper.sh has been uninstalled." 0 -1
             fi

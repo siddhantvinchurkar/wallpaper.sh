@@ -98,10 +98,11 @@ You can also manually uninstall it by removing the files and configurations crea
 rm -f $HOME/.wallpaper.sh.config
 rm -f $HOME/.wallpaper.sh.profile
 rm -f $HOME/.wallpaper.sh.keywords
-rm -f /var/log/wallpaper.json
+sudo rm -f /var/log/wallpaper.json
 grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile; [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
 grep -q 'alias wp=' $HOME/.bash_aliases; [ $? -eq 0 ] && sed -i '/alias wp=/d' $HOME/.bash_aliases
 unset CWFI CWUK WFI WUK WSQ WLF WLC
+source $HOME/.profile
 ```
 
 ## Logging
