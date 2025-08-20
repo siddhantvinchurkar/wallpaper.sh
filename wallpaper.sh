@@ -1,18 +1,22 @@
 #!/bin/bash
 sudo -v
+if [ $? -ne 0 ]; then
+    echo "Installing wallpaper.sh requires sudo privileges. Please ensure you have the necessary permissions and try again."
+    exit 1
+fi
 uname -v | grep -qoE 'Ubuntu'
 if [ $? -ne 0 ]; then
     echo "wallpaper.sh is designed to work only with Ubuntu-based systems but you're running something else."
     exit 1
 fi
-if [ $(apt list --installed 2>&1 | grep -coE '^(ubuntu-desktop|ubuntu-desktop-minimal|gsettings-ubuntu-schemas|gsettings-desktop-schemas)') -ne 4 ]; then
+if [ $(sudo apt list --installed 2>&1 | grep -coE '^(ubuntu-desktop|ubuntu-desktop-minimal|gsettings-ubuntu-schemas|gsettings-desktop-schemas)') -ne 4 ]; then
     echo "wallpaper.sh is designed to work only with Ubuntu Desktop environments."
     echo "Try running 'sudo apt install -y ubuntu-desktop'. It might help."
     exit 1
 fi
 required_dependencies=(curl jq dialog)
 required_dependencies=($(printf "%s\n" "${required_dependencies[@]}" | sort))
-installed_dependencies=($(apt list --installed 2>&1 | grep -oE '^('"$(IFS='|'; echo "${required_dependencies[*]}")"')'))
+installed_dependencies=($(sudo apt list --installed 2>&1 | grep -oE '^('"$(IFS='|'; echo "${required_dependencies[*]}")"')'))
 installed_dependencies=($(printf "%s\n" "${installed_dependencies[@]}" | sort))
 missing_dependencies=($(comm -13 <(printf "%s\n" "${installed_dependencies[@]}") <(printf "%s\n" "${required_dependencies[@]}")))
 if [ ${#missing_dependencies[@]} -ne 0 ]; then
@@ -20,7 +24,7 @@ if [ ${#missing_dependencies[@]} -ne 0 ]; then
     echo "No worries, wallpaper.sh will attempt to install them for you..."
     sudo apt update -y
     sudo apt install -y "${missing_dependencies[@]}"
-    installed_dependencies=($(apt list --installed 2>&1 | grep -oE '^('"$(IFS='|'; echo "${required_dependencies[*]}")"')'))
+    installed_dependencies=($(sudo apt list --installed 2>&1 | grep -oE '^('"$(IFS='|'; echo "${required_dependencies[*]}")"')'))
     installed_dependencies=($(printf "%s\n" "${installed_dependencies[@]}" | sort))
     missing_dependencies=($(comm -13 <(printf "%s\n" "${installed_dependencies[@]}") <(printf "%s\n" "${required_dependencies[@]}")))
     if [ ${#missing_dependencies[@]} -ne 0 ]; then
@@ -40,9 +44,9 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
         exit 1
     fi
     clear
-    unsplash_api_key=$(dialog --title "Unsplash API Key" --ok-label "Proceed" --stdout --inputbox "wallpaper.sh uses the Unsplash API to fetch wallpapers. Please enter your Unsplash API key to proceed." 0 -1)
+    unsplash_api_key=$(dialog --title "Unsplash API Key" --ok-label "Proceed" --no-cancel --stdout --inputbox "wallpaper.sh uses the Unsplash API to fetch wallpapers. Please enter your Unsplash API key to proceed." 0 -1)
     clear
-    wallpaper_fetch_interval=$(dialog --title "Wallpaper Fetch Interval" --ok-label "Proceed" --stdout --menu "wallpaper.sh can wait a set amount of time before it changes your wallpaper again since the last time it was changed. This ensures you don't exceed the free allowance of your Unsplash API key. How long should wallpaper.sh wait before changing the wallpaper again since the last time it was changed?" 0 0 4 1 "Don't wait - Change the wallpaper immediately (not recommended)" 2 "Wait for at least 5 minutes" 3 "Wait for at least 30 minutes" 4 "Wait for at least 1 hour")
+    wallpaper_fetch_interval=$(dialog --title "Wallpaper Fetch Interval" --no-cancel --ok-label "Proceed" --stdout --menu "wallpaper.sh can wait a set amount of time before it changes your wallpaper again since the last time it was changed. This ensures you don't exceed the free allowance of your Unsplash API key. How long should wallpaper.sh wait before changing the wallpaper again since the last time it was changed?" 0 0 4 1 "Don't wait - Change the wallpaper immediately (not recommended)" 2 "Wait for at least 5 minutes" 3 "Wait for at least 30 minutes" 4 "Wait for at least 1 hour")
     clear
     dialog --title "Installing wallpaper.sh" --yes-label "Proceed" --no-label "Abort Installation" --yesno "wallpaper.sh will be installed for this user ($USER). Continue?" 0 -1
     install_prompt=$?
@@ -140,8 +144,8 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     [ ! -f $HOME/.bash_aliases ] && echo '#!/bin/bash' > $HOME/.bash_aliases
     [ -f $HOME/.bash_aliases ] && chmod +x $HOME/.bash_aliases
     alias wp > /dev/null 2>&1
-    [ $? -ne 0 ] && [ -f $HOME/.bash_aliases ] && echo 'alias wp="bash <(curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh)"' >> $HOME/.bash_aliases
-    alias wp="bash <(curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh)"
+    [ $? -ne 0 ] && [ -f $HOME/.bash_aliases ] && echo 'alias wp="curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh | bash"' >> $HOME/.bash_aliases
+    alias wp="curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh | bash"
     dialog --title "Installing wallpaper.sh" --gauge "Adjusting permissions for $HOME/.wallpaper.sh.profile..." 0 -1 90 &
     PID=$!
     sleep 1
@@ -157,10 +161,10 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     clear
     dialog --title "Installation Complete" --ok-label "Let's Go!" --msgbox "wallpaper.sh has been successfully installed for this user ($USER). To run wallpaper.sh, use the command 'wp'." 0 -1
     clear
-    bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
+    curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
 else
     clear
-    wp_menu_choice=$(dialog --title "wallpaper.sh" --stdout --menu "What would you like to do?" 0 -1 4 1 "Change wallpaper" 2 "Get details about the current wallpaper" 3 "Update the wallpaper fetch interval" 4 "Exit")
+    wp_menu_choice=$(dialog --title "wallpaper.sh" --no-cancel --stdout --menu "What would you like to do?" 0 -1 5 1 "Change wallpaper" 2 "Get details about the current wallpaper" 3 "Update the wallpaper fetch interval" 4 "Uninstall wallpaper.sh" 5 "Exit")
     clear
     case $wp_menu_choice in
         1)
@@ -170,17 +174,17 @@ else
             WLF=0 source $HOME/.wallpaper.sh.profile
             kill $PID
             clear
-            bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
+            curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
             ;;
         2)
             clear
-            dialog --title "Current Wallpaper Details" --msgbox "$(cat /var/log/wallpaper.json | jq -r '.|to_entries|.[]|[.key,.value]|@tsv' | column -t -s$'\t')" 0 -1
+            dialog --title "Current Wallpaper Details" --ok-label "Go Back" --msgbox "$(cat /var/log/wallpaper.json | jq -r '.|to_entries|.[]|[.key,.value]|@tsv' | column -t -s$'\t')" 0 -1
             clear
-            bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
+            curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
             ;;
         3)
             clear
-            wallpaper_fetch_interval=$(dialog --title "Wallpaper Fetch Interval" --stdout --menu "wallpaper.sh can wait a set amount of time before it changes your wallpaper again since the last time it was changed. This ensures you don't exceed the free allowance of your Unsplash API key. How long should wallpaper.sh wait before changing the wallpaper again since the last time it was changed?" 0 0 4 1 "Don't wait - Change the wallpaper immediately (not recommended)" 2 "Wait for at least 5 minutes" 3 "Wait for at least 30 minutes" 4 "Wait for at least 1 hour")
+            wallpaper_fetch_interval=$(dialog --title "Wallpaper Fetch Interval" --no-cancel --stdout --menu "wallpaper.sh can wait a set amount of time before it changes your wallpaper again since the last time it was changed. This ensures you don't exceed the free allowance of your Unsplash API key. How long should wallpaper.sh wait before changing the wallpaper again since the last time it was changed?" 0 -1 4 1 "Don't wait - Change the wallpaper immediately (not recommended)" 2 "Wait for at least 5 minutes" 3 "Wait for at least 30 minutes" 4 "Wait for at least 1 hour")
             echo "CWUK=$WUK" > $HOME/.wallpaper.sh.config
             case $wallpaper_fetch_interval in
                 1)
@@ -201,11 +205,28 @@ else
             esac
             WFL=0 source $HOME/.wallpaper.sh.profile
             clear
-            dialog --title "Wallpaper Fetch Interval Updated" --msgbox "The wallpaper fetch interval has been updated." 0 -1
+            dialog --title "Wallpaper Fetch Interval Updated" --ok-label "Cool" --msgbox "The wallpaper fetch interval has been updated." 0 -1
             clear
-            bash <(curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh")
+            curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
             ;;
         4)
+            clear
+            dialog --title "Uninstall wallpaper.sh" --yes-label "Yeah, uninstall it" --no-label "No, keep it" --yesno "Are you sure you want to uninstall wallpaper.sh?" 0 -1
+            if [ $? -eq 0 ]; then
+                rm -f $HOME/.wallpaper.sh.profile
+                rm -f $HOME/.wallpaper.sh.config
+                rm -f $HOME/.wallpaper.sh.keywords
+                grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile
+                [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
+                grep -q 'alias wp=' $HOME/.bash_aliases
+                [ $? -eq 0 ] && sed -i '/alias wp=/d' $HOME/.bash_aliases
+                clear
+                dialog --title "Uninstall Complete" --ok-label "Okay, thanks!" --msgbox "wallpaper.sh has been uninstalled." 0 -1
+            fi
+            clear
+            exit 0
+            ;;
+        5)
             clear
             exit 0
             ;;

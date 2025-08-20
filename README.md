@@ -11,7 +11,7 @@ The Unsplash API explicitly prohibits the use of their API for wallpaper applica
 wallpaper.sh is super easy to install and use. The following command verifies that you're running a supported version of Ubuntu, then installs any required dependencies, and finally presents a _step-by-step_ setup wizard to configure and install wallpaper.sh. Just copy and paste the following command into your terminal to get started.
 
 ```bash
-bash <(curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh)
+curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
 ```
 
 During the installation process, you'll be prompted to enter an Unsplash API key. If you don't have one, you can create a free account on the Unsplash website and generate an API key from the developer section.
@@ -29,7 +29,13 @@ wp
 Since `wp` is just an alias for the installation command, you can also run the script directly with the following command.
 
 ```bash
-bash <(curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh)
+curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
+```
+
+If you want to quickly change your wallpaper without going through the entire interface, you can use the following command.
+
+```bash
+[ -f $HOME/.wallpaper.sh.profile ] && WFL=0 source $HOME/.wallpaper.sh.profile
 ```
 
 ## Features
@@ -52,14 +58,15 @@ abstract
 
 ## Uninstallation
 
-I plan to add an option to uninstall wallpaper.sh in the main menu in a future update. Since wallpaper.sh is fetched over the internet every time it is run, you'll see an option to uninstall it in the main menu when I add it without any additional configuration.
-
-For now, you can manually remove the files and configurations created by wallpaper.sh if you no longer wish to use it.
+If you ever need to uninstall wallpaper.sh, just choose the "Uninstall wallpaper.sh" option from the main menu.
+You can also manually uninstall it by removing the files and configurations created by wallpaper.sh if you no longer wish to use it. Use the following commands to uninstall wallpaper.sh manually.
 
 ```bash
 rm $HOME/.wallpaper.sh.config
 rm $HOME/.wallpaper.sh.profile
 rm $HOME/.wallpaper.sh.keywords
+grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile; [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
+grep -q 'alias wp=' $HOME/.bash_aliases; [ $? -eq 0 ] && sed -i '/alias wp=/d' $HOME/.bash_aliases
 ```
 
 ## Logging
