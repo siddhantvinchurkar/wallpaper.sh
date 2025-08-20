@@ -52,13 +52,46 @@ Each line should contain a single search term. For example:
 
 ```bash
 nature
-city
+cars
+summer
 abstract
+wildlife
+urban
+sea
+perspective
+winter
+autumn
+spring
+monsoon
+rain
+landscape
+unhinged
+blur
+aerial
+earth
+pastel
+travel
+minimalist
+textures
+girls
+cityscape
+bangalore
+black
+space
+universe
+night
+sunrise
+sunset
+trees
+dark
+lonely
+colorful
 ```
 
 ## Uninstallation
 
 If you ever need to uninstall wallpaper.sh, just choose the "Uninstall wallpaper.sh" option from the main menu.
+
 You can also manually uninstall it by removing the files and configurations created by wallpaper.sh if you no longer wish to use it. Use the following commands to uninstall wallpaper.sh manually.
 
 ```bash
@@ -68,6 +101,7 @@ rm -f $HOME/.wallpaper.sh.keywords
 rm -f /var/log/wallpaper.json
 grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile; [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
 grep -q 'alias wp=' $HOME/.bash_aliases; [ $? -eq 0 ] && sed -i '/alias wp=/d' $HOME/.bash_aliases
+unset CWFI CWUK WFI WUK WSQ WLF WLC
 ```
 
 ## Logging

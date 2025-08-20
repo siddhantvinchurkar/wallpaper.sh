@@ -105,8 +105,8 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     sleep 1
     kill $PID > /dev/null 2>&1
     echo '#!/bin/bash' > $HOME/.wallpaper.sh.profile
-    echo 'if [ -f $HOME/.wallpaper.sh.config ]; then' >> $HOME/.wallpaper.sh.profile
     echo 'export HOME=$HOME' >> $HOME/.wallpaper.sh.profile
+    echo 'if [ -f $HOME/.wallpaper.sh.config ]; then' >> $HOME/.wallpaper.sh.profile
     echo '  while IFS= read -r line; do' >> $HOME/.wallpaper.sh.profile
     echo '    if [ "$(echo "$line" | awk -F '\''='\'' '\''{print $1}'\'')" == "CWFI" ]; then' >> $HOME/.wallpaper.sh.profile
     echo '      export CWFI="$(echo "$line" | awk -F '\''='\'' '\''{print $2}'\'')"' >> $HOME/.wallpaper.sh.profile
@@ -120,10 +120,12 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     echo '    fi' >> $HOME/.wallpaper.sh.profile
     echo '  done < $HOME/.wallpaper.sh.config' >> $HOME/.wallpaper.sh.profile
     echo 'fi' >> $HOME/.wallpaper.sh.profile
-    echo '[ -z "${WFI+x}" ] && export WFI="$CWFI"' >> $HOME/.wallpaper.sh.profile
+    echo '[ ! -z "${WFI+x}" ] && export WFI=$CWFI' >> $HOME/.wallpaper.sh.profile
+    echo '[ -z "${WFI+x}" ] && export WFI=$WFI' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WLF+x}" ] && export WLF=0' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WLC+x}" ] && export WLC=$(gsettings get org.gnome.desktop.background picture-uri | cut -d "'\''" -f 2 | cut -c 8-)' >> $HOME/.wallpaper.sh.profile
-    echo '[ -z "${WUK+x}" ] && export WUK="$CWUK"' >> $HOME/.wallpaper.sh.profile
+    echo '[ ! -z "${WUK+x}" ] && export WUK=$CWUK' >> $HOME/.wallpaper.sh.profile
+    echo '[ -z "${WUK+x}" ] && export WUK=$WUK' >> $HOME/.wallpaper.sh.profile
     echo '[ -z "${WSQ+x}" ] && export WSQ=$(shuf -n 1 $HOME/.wallpaper.sh.keywords)' >> $HOME/.wallpaper.sh.profile
     echo '[ -f /tmp/wpj ] && rm /tmp/wpj' >> $HOME/.wallpaper.sh.profile
     echo '[ $(($(date +%s)-$WLF)) -gt $WFI ] && curl -fsL "https://api.unsplash.com/search/photos?query=$WSQ&client_id=$WUK&per_page=1&orientation=landscape&page="$(shuf -i 1-200 -n 1)"&order_by=latest" -o /tmp/wpj' >> $HOME/.wallpaper.sh.profile
@@ -223,6 +225,7 @@ else
                 [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
                 grep -q 'alias wp=' $HOME/.bash_aliases
                 [ $? -eq 0 ] && sed -i '/alias wp=/d' $HOME/.bash_aliases
+                unset CWFI CWUK WFI WUK WSQ WLF WLC
                 clear
                 dialog --title "Uninstall Complete" --ok-label "Okay, thanks!" --msgbox "wallpaper.sh has been uninstalled." 0 -1
             fi
