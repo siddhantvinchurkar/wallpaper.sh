@@ -62,9 +62,10 @@ If you ever need to uninstall wallpaper.sh, just choose the "Uninstall wallpaper
 You can also manually uninstall it by removing the files and configurations created by wallpaper.sh if you no longer wish to use it. Use the following commands to uninstall wallpaper.sh manually.
 
 ```bash
-rm $HOME/.wallpaper.sh.config
-rm $HOME/.wallpaper.sh.profile
-rm $HOME/.wallpaper.sh.keywords
+rm -f $HOME/.wallpaper.sh.config
+rm -f $HOME/.wallpaper.sh.profile
+rm -f $HOME/.wallpaper.sh.keywords
+rm -f /var/log/wallpaper.json
 grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile; [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
 grep -q 'alias wp=' $HOME/.bash_aliases; [ $? -eq 0 ] && sed -i '/alias wp=/d' $HOME/.bash_aliases
 ```

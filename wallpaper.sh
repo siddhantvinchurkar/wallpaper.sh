@@ -144,8 +144,8 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     [ ! -f $HOME/.bash_aliases ] && echo '#!/bin/bash' > $HOME/.bash_aliases
     [ -f $HOME/.bash_aliases ] && chmod +x $HOME/.bash_aliases
     alias wp > /dev/null 2>&1
-    [ $? -ne 0 ] && [ -f $HOME/.bash_aliases ] && echo 'alias wp="curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh | bash"' >> $HOME/.bash_aliases
-    alias wp="curl -fsL https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh | bash"
+    [ $? -ne 0 ] && [ -f $HOME/.bash_aliases ] && echo 'alias wp="curl -fsL \"https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh\" | bash"' >> $HOME/.bash_aliases
+    alias wp="curl -fsL \"https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh\" | bash"
     dialog --title "Installing wallpaper.sh" --gauge "Adjusting permissions for $HOME/.wallpaper.sh.profile..." 0 -1 90 &
     PID=$!
     sleep 1
@@ -153,7 +153,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     chmod +x $HOME/.wallpaper.sh.profile
     dialog --title "Verifying wallpaper.sh" --gauge "Attempting to fetch and set your first wallpaper..." 0 -1 95 &
     PID=$!
-    source $HOME/.profile
+    WLF=0 source $HOME/.profile
     dialog --title "Verifying wallpaper.sh" --gauge "Verification successful!" 0 -1 100 &
     PID=$!
     sleep 1
@@ -216,6 +216,7 @@ else
                 rm -f $HOME/.wallpaper.sh.profile
                 rm -f $HOME/.wallpaper.sh.config
                 rm -f $HOME/.wallpaper.sh.keywords
+                rm -f /var/log/wallpaper.json
                 grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile
                 [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
                 grep -q 'alias wp=' $HOME/.bash_aliases
