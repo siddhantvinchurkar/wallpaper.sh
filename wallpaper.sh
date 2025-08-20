@@ -59,7 +59,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     dialog --title "Configuring wallpaper.sh" --gauge "Writing configuration to $HOME/.wallpaper.sh.config..." 0 -1 10 &
     PID=$!
     sleep 1
-    kill $PID
+    kill $PID > /dev/null 2>&1
     echo "CWUK=$unsplash_api_key" > $HOME/.wallpaper.sh.config
     case $wallpaper_fetch_interval in
         1)
@@ -81,7 +81,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     dialog --title "Configuring wallpaper.sh" --gauge "Writing a default set of keywords to $HOME/.wallpaper.sh.keywords..." 0 -1 20 &
     PID=$!
     sleep 1
-    kill $PID
+    kill $PID > /dev/null 2>&1
     echo -en "nature\ncars\nsummer\nabstract\nwildlife\nurban\nsea\nperspective\nwinter\nautumn\nspring\nmonsoon\nrain\nlandscape\nunhinged\nblur\naerial\nearth\npastel\ntravel\nminimalist\ntextures\ngirls\ncityscape\nbangalore\nblack\nspace\nuniverse\nnight\nsunrise\nsunset\ntrees\ndark\nlonely\ncolorful" > $HOME/.wallpaper.sh.keywords
     dialog --title "Configuring wallpaper.sh" --gauge "Creating log file /var/log/wallpaper.json..." 0 -1 30 &
     PID=$!
@@ -91,18 +91,19 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     dialog --title "Configuring wallpaper.sh" --gauge "Taking ownership of log file /var/log/wallpaper.json..." 0 -1 40 &
     PID=$!
     sleep 1
-    kill $PID
-    [ -f /var/log/wallpaper.json ] && sudo chown -R $USER:$USER /var/log/wallpaper.json
+    kill $PID > /dev/null 2>&1
+    user=$USER
+    [ -f /var/log/wallpaper.json ] && sudo chown -R $user:$user /var/log/wallpaper.json
     dialog --title "Configuring wallpaper.sh" --gauge "Adjusting permissions for log file /var/log/wallpaper.json..." 0 -1 50 &
     PID=$!
     sleep 1
-    kill $PID
+    kill $PID > /dev/null 2>&1
     [ -f /var/log/wallpaper.json ] && sudo chmod -R 777 /var/log/wallpaper.json
     [ -f /var/log/wallpaper.json ] && sudo chmod -R +x /var/log/wallpaper.json
     dialog --title "Configuring wallpaper.sh" --gauge "Creating personalized profile script $HOME/.wallpaper.sh.profile..." 0 -1 60 &
     PID=$!
     sleep 1
-    kill $PID
+    kill $PID > /dev/null 2>&1
     echo '#!/bin/bash' > $HOME/.wallpaper.sh.profile
     echo 'if [ -f $HOME/.wallpaper.sh.config ]; then' >> $HOME/.wallpaper.sh.profile
     echo '  cat $HOME/.wallpaper.sh.config | while IFS= read -r line; do' >> $HOME/.wallpaper.sh.profile
@@ -134,13 +135,13 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     dialog --title "Installing wallpaper.sh" --gauge "Appending profile script to $HOME/.profile..." 0 -1 70 &
     PID=$!
     sleep 1
-    kill $PID
+    kill $PID > /dev/null 2>&1
     grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile
     [ $? -ne 0 ] && [ -f $HOME/.profile ] && echo '[ -f $HOME/.wallpaper.sh.profile ] && source $HOME/.wallpaper.sh.profile' >> $HOME/.profile
     dialog --title "Installing wallpaper.sh" --gauge "Creating alias 'wp' in $HOME/.bash_aliases..." 0 -1 80 &
     PID=$!
     sleep 1
-    kill $PID
+    kill $PID > /dev/null 2>&1
     [ ! -f $HOME/.bash_aliases ] && echo '#!/bin/bash' > $HOME/.bash_aliases
     [ -f $HOME/.bash_aliases ] && chmod +x $HOME/.bash_aliases
     alias wp > /dev/null 2>&1
@@ -149,7 +150,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     dialog --title "Installing wallpaper.sh" --gauge "Adjusting permissions for $HOME/.wallpaper.sh.profile..." 0 -1 90 &
     PID=$!
     sleep 1
-    kill $PID
+    kill $PID > /dev/null 2>&1
     chmod +x $HOME/.wallpaper.sh.profile
     dialog --title "Verifying wallpaper.sh" --gauge "Attempting to fetch and set your first wallpaper..." 0 -1 95 &
     PID=$!
@@ -157,7 +158,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     dialog --title "Verifying wallpaper.sh" --gauge "Verification successful!" 0 -1 100 &
     PID=$!
     sleep 1
-    kill $PID
+    kill $PID > /dev/null 2>&1
     clear
     dialog --title "Installation Complete" --ok-label "Let's Go!" --msgbox "wallpaper.sh has been successfully installed for this user ($USER). To run wallpaper.sh, use the command 'wp'." 0 -1
     clear
@@ -172,7 +173,7 @@ else
             dialog --title "Changing Wallpaper" --gauge "Fetching a new wallpaper..." 0 -1 100 &
             PID=$!
             WLF=0 source $HOME/.wallpaper.sh.profile
-            kill $PID
+            kill $PID > /dev/null 2>&1
             clear
             curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
             ;;
