@@ -217,7 +217,8 @@ else
             cron_interval_choice_message=""
             case $cron_interval_choice in
                 1)
-                    cron_interval_choice="Done! wallpaper.sh will never change your wallpaper automatically."
+                    cron_interval_choice=""
+                    cron_interval_choice_message="Done! wallpaper.sh will never change your wallpaper automatically."
                     ;;
                 2)
                     cron_interval_choice="*/5 * * * * WLF=0 $HOME/.wallpaper.sh.profile"
@@ -256,15 +257,17 @@ else
                     cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper every day (once every 24 hours)."
                     ;;
                 *)
-                    cron_interval_choice="Done! wallpaper.sh will never change your wallpaper automatically."
+                    cron_interval_choice=""
+                    cron_interval_choice_message="Done! wallpaper.sh will never change your wallpaper automatically."
                     ;;
             esac
             clear
-            crontab -l | grep -v -F "$cron_interval_choice" | crontab -
+            crontab -l | grep -v -F "WLF=0 $HOME/.wallpaper.sh.profile" | crontab -
             clear
             dialog --title "Automation Setup" --gauge "Adding a new crontab entry..." 0 -1 50 &
             PID=$!
             crontab -l | { cat; echo "$cron_interval_choice"; } | crontab -
+            sleep 1
             kill $PID > /dev/null 2>&1
             clear
             dialog --title "Automation Setup" --gauge "$cron_interval_choice_message" 0 -1 100 &
