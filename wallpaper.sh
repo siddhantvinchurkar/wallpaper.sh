@@ -166,7 +166,7 @@ if [ ! -f $HOME/.wallpaper.sh.profile ]; then
     curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
 else
     clear
-    wp_menu_choice=$(dialog --title "wallpaper.sh" --no-cancel --stdout --menu "What would you like to do?" 0 -1 7 1 "Change wallpaper" 2 "Get details about the current wallpaper" 3 "Update the wallpaper fetch interval" 4 "Crontab Settings" 5 "View the current configuration" 6 "Uninstall wallpaper.sh" 7 "Exit")
+    wp_menu_choice=$(dialog --title "wallpaper.sh" --no-cancel --stdout --menu "What would you like to do?" 0 -1 7 1 "Change wallpaper" 2 "Get details about the current wallpaper" 3 "Update the wallpaper fetch interval" 4 "Automation Settings" 5 "View the current configuration" 6 "Uninstall wallpaper.sh" 7 "Exit")
     clear
     case $wp_menu_choice in
         1)
@@ -212,9 +212,67 @@ else
             curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
             ;;
         4)
-            # TODO: Implement functionality for option 4 - crontab settings
             clear
-            exit 0
+            cron_interval_choice=$(dialog --title "Automation Settings" --no-cancel --stdout --menu "wallpaper.sh can install a cron job to automatically change your wallpaper after a set amount of time has elapsed since the last change. How often would you like wallpaper.sh to change your wallpaper automatically?" 0 -1 10 1 "Do not change my wallpaper automatically" 2 "Once every 5 minutes" 3 "Once every 10 minutes" 4 "Once every 20 minutes" 5 "Once every 30 minutes" 6 "Once every hour" 7 "Once every 3 hours" 8 "4 times a day (every 6 hours)" 9 "Twice a day (every 12 hours)" 10 "Every day (once every 24 hours)")
+            cron_interval_choice_message=""
+            case $cron_interval_choice in
+                1)
+                    cron_interval_choice="Done! wallpaper.sh will never change your wallpaper automatically."
+                    ;;
+                2)
+                    cron_interval_choice="*/5 * * * * WLF=0 $HOME/.wallpaper.sh.profile"
+                    cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper once every 5 minutes."
+                    ;;
+                3)
+                    cron_interval_choice="*/10 * * * * WLF=0 $HOME/.wallpaper.sh.profile"
+                    cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper once every 10 minutes."
+                    ;;
+                4)
+                    cron_interval_choice="*/20 * * * * WLF=0 $HOME/.wallpaper.sh.profile"
+                    cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper once every 20 minutes."
+                    ;;
+                5)
+                    cron_interval_choice="*/30 * * * * WLF=0 $HOME/.wallpaper.sh.profile"
+                    cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper once every 30 minutes."
+                    ;;
+                6)
+                    cron_interval_choice="0 * * * * WLF=0 $HOME/.wallpaper.sh.profile"
+                    cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper once every hour."
+                    ;;
+                7)
+                    cron_interval_choice="0 */3 * * * WLF=0 $HOME/.wallpaper.sh.profile"
+                    cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper once every 3 hours."
+                    ;;
+                8)
+                    cron_interval_choice="0 */6 * * * WLF=0 $HOME/.wallpaper.sh.profile"
+                    cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper 4 times a day (once every 6 hours)."
+                    ;;
+                9)
+                    cron_interval_choice="0 */12 * * * WLF=0 $HOME/.wallpaper.sh.profile"
+                    cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper twice a day (once every 12 hours)."
+                    ;;
+                10)
+                    cron_interval_choice="0 0 * * * WLF=0 $HOME/.wallpaper.sh.profile"
+                    cron_interval_choice_message="Done! wallpaper.sh will now automatically change your wallpaper every day (once every 24 hours)."
+                    ;;
+                *)
+                    cron_interval_choice="Done! wallpaper.sh will never change your wallpaper automatically."
+                    ;;
+            esac
+            clear
+            crontab -l | grep -v -F "$cron_interval_choice" | crontab -
+            clear
+            dialog --title "Automation Setup" --gauge "Adding a new crontab entry..." 0 -1 50 &
+            PID=$!
+            crontab -l | { cat; echo "$cron_interval_choice"; } | crontab -
+            kill $PID > /dev/null 2>&1
+            clear
+            dialog --title "Automation Setup" --gauge "$cron_interval_choice_message" 0 -1 100 &
+            PID=$!
+            sleep 1
+            kill $PID > /dev/null 2>&1
+            clear
+            curl -fsL "https://raw.githubusercontent.com/siddhantvinchurkar/wallpaper.sh/refs/heads/master/wallpaper.sh" | bash
             ;;
         5)
             clear
@@ -235,6 +293,7 @@ else
                 [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
                 grep -q 'alias wp=' $HOME/.bash_aliases
                 [ $? -eq 0 ] && sed -i '/alias wp=/d' $HOME/.bash_aliases
+                crontab -l | grep -v -F "WLF=0 $HOME/.wallpaper.sh.profile" | crontab -
                 unset CWFI CWUK WFI WUK WSQ WLF WLC
                 source $HOME/.profile
                 clear

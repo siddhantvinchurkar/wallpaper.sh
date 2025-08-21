@@ -101,6 +101,7 @@ rm -f $HOME/.wallpaper.sh.keywords
 sudo rm -f /var/log/wallpaper.json
 grep -q 'source $HOME/.wallpaper.sh.profile' $HOME/.profile; [ $? -eq 0 ] && sed -i '/source $HOME\/.wallpaper.sh.profile/d' $HOME/.profile
 grep -q 'alias wp=' $HOME/.bash_aliases; [ $? -eq 0 ] && sed -i '/alias wp=/d' $HOME/.bash_aliases
+crontab -l | grep -v -F "WLF=0 $HOME/.wallpaper.sh.profile" | crontab -
 unset CWFI CWUK WFI WUK WSQ WLF WLC
 source $HOME/.profile
 ```
